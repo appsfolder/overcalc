@@ -277,13 +277,51 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   ),
                 ),
                 Text(
-                  'Создано на Flutter ради прикола',
+                  'Создано на Flutter.',
                   style: const TextStyle(
                     fontFamily: 'IBMPlexSans',
                     fontWeight: FontWeight.w400,
                   ),
                 ),
                 const SizedBox(height: 10),
+                InkWell(
+                  onTap: () async {
+                    final url = Uri.parse('rustore.ru/apps/2063671512');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.update,
+                          size: 16,
+                          color: Colors.white70,
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'RuStore',
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSans',
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
                 InkWell(
                   onTap: () async {
                     final url = Uri.parse(
@@ -303,7 +341,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
-                          Icons.open_in_new,
+                          Icons.merge,
                           size: 16,
                           color: Colors.white70,
                         ),
@@ -341,7 +379,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
-                          Icons.open_in_new,
+                          Icons.account_circle,
                           size: 16,
                           color: Colors.white70,
                         ),
@@ -361,6 +399,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
                 FutureBuilder<PackageInfo>(
                   future: PackageInfo.fromPlatform(),
