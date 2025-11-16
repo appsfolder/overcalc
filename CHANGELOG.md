@@ -1,0 +1,14 @@
+v1.0.0 - basic functions
+v1.0.1 - improved performance
+v1.0.3 - Roboto -> IBM Plex Sans
+v1.0.4 - bug fixes
+v1.1.5 - chat history
+v1.1.6 - ability to clear chat history
+v1.2.7 - different personalities
+v1.2.8 - added 3 new personalities
+v1.3.0 - no more Material Design
+v1.3.1 - added about window
+v1.3.2 - full code refactor
+v1.4.2 - added haptic feedback
+v1.4.3 - release
+v1.4.4 - misc fixes
