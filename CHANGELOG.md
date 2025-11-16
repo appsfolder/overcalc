@@ -12,3 +12,6 @@ v1.3.2 - full code refactor
 v1.4.2 - added haptic feedback
 v1.4.3 - release
 v1.4.4 - misc fixes
+v1.5.4 - added proxy server, moved from google-genai to pure http lib
+v1.5.5 - fixed personalities
+v1.5.6 - fixed custom api key support

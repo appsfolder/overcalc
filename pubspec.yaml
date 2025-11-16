@@ -1,7 +1,7 @@
 name: overcalc
 description: "Overengineered calculator."
 publish_to: "none"
-version: "1.4.4+1"
+version: "1.5.6+1"
 
 environment:
   sdk: ^3.9.2
@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_generative_ai: ^0.4.7
   flutter_dotenv: ^6.0.0
   auto_size_text: ^3.0.0
   url_launcher: ^6.2.6
@@ -19,6 +18,7 @@ dependencies:
   flutter_native_splash: ^2.4.7
   package_info_plus: ^5.0.1
   cupertino_icons: ^1.0.8
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:

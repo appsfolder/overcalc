@@ -27,7 +27,7 @@
 *   **Язык:** [Dart](https://dart.dev/)
 *   **AI:** [Google Gemini API](https://ai.google.dev/)
 *   **Пакеты:**
-    *   `google_generative_ai` - для работы с Gemini
+    *   `http` - для запросов к Gemini API
     *   `auto_size_text` - для адаптивного текста на дисплее
     *   `shared_preferences` - для хранения API ключа пользователя
     *   `url_launcher` - для открытия внешних ссылок
@@ -55,6 +55,8 @@
     В корневой папке проекта создайте файл с именем `.env` (вы можете скопировать `.env.example`) и добавьте в него ваш ключ:
     ```
     GEMINI_API_KEY=ВАШ_СУПЕР_СЕКРЕТНЫЙ_API_КЛЮЧ
+    PROXY_SERVER_URL="https://example.com/api/request"
+    DEFAULT_MODEL_NAME="gemini-2.5-flash"
     ```
 
 3.  **Установите зависимости:**
