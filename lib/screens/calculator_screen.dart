@@ -488,6 +488,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   void _showApiKeyDialog() async {
     final prefs = await SharedPreferences.getInstance();
     final currentKey = prefs.getString('user_gemini_api_key') ?? '';
+    if (!mounted) return;
     final controller = TextEditingController(text: currentKey);
 
     showDialog(
