@@ -1,7 +1,7 @@
 name: overcalc
 description: "Overengineered calculator."
 publish_to: "none"
-version: "1.5.6+1"
+version: "1.5.6+156"
 
 environment:
   sdk: ^3.9.2
