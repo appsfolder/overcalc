@@ -287,7 +287,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 InkWell(
                   onTap: () async {
                     final url = Uri.parse(
-                      'https://github.com/appsfolder/OverCalc',
+                      'https://github.com/appsfolder/overcalc',
                     );
                     if (await canLaunchUrl(url)) {
                       await launchUrl(
