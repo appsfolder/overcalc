@@ -286,7 +286,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 const SizedBox(height: 10),
                 InkWell(
                   onTap: () async {
-                    final url = Uri.parse('rustore.ru/apps/2063671512');
+                    final url = Uri.parse('https://rustore.ru/apps/2063671512');
                     if (await canLaunchUrl(url)) {
                       await launchUrl(
                         url,
