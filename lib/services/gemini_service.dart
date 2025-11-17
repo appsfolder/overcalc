@@ -16,6 +16,18 @@ class GeminiService {
   final String _modelName =
       dotenv.env['DEFAULT_MODEL_NAME'] ?? 'gemini-2.5-flash';
 
+  Future<void> _reportErrorToService(String errorMessage) async {
+    try {
+      final url = Uri.parse('https://ncf.gsmarbot.ru/llm/error');
+      final headers = {'Content-Type': 'application/json'};
+      final body = jsonEncode({'error_message': errorMessage});
+
+      http.post(url, headers: headers, body: body);
+    } catch (e) {
+      // skipping error
+    }
+  }
+
   Future<String?> _getUserApiKey() async {
     final storage = const FlutterSecureStorage();
     return storage.read(key: 'user_gemini_api_key');
@@ -61,15 +73,18 @@ class GeminiService {
         final modelResponse = responseData['response_text'];
 
         if (modelResponse == null || modelResponse.isEmpty) {
-          throw Exception('Прокси-сервер вернул пустой ответ.');
+          const errorMessage = 'Прокси-сервер вернул пустой ответ.';
+          _reportErrorToService(errorMessage);
+          throw Exception(errorMessage);
         }
 
         return modelResponse;
       } else {
         final errorData = jsonDecode(utf8.decode(response.bodyBytes));
-        throw Exception(
-          'Ошибка сервера: ${response.statusCode}. ${errorData['error'] ?? ''}',
-        );
+        final errorMessage =
+            'Ошибка сервера: ${response.statusCode}. ${errorData['error'] ?? ''}';
+        _reportErrorToService(errorMessage);
+        throw Exception(errorMessage);
       }
     } catch (e) {
       print(e);

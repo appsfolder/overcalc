@@ -21,3 +21,4 @@ v1.6.0 - viewable chat history
 v1.6.1 - minor bug fixes
 v1.6.2 - help popup
 v1.6.3 - bug fixes
+v1.6.4 - mini-crashlytics
