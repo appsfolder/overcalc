@@ -29,7 +29,7 @@
 *   **Пакеты:**
     *   `http` - для запросов к Gemini API
     *   `auto_size_text` - для адаптивного текста на дисплее
-    *   `shared_preferences` - для хранения API ключа пользователя
+    *   `flutter_secure_storage` - для хранения API ключа пользователя, истории, и настроек
     *   `url_launcher` - для открытия внешних ссылок
     *   `flutter_native_splash` & `flutter_launcher_icons` - для брендинга
 

@@ -15,3 +15,4 @@ v1.4.4 - misc fixes
 v1.5.4 - added proxy server, moved from google-genai to pure http lib
 v1.5.5 - fixed personalities
 v1.5.6 - fixed custom api key support
+v1.5.7 - migrated to flutter_secure_storage

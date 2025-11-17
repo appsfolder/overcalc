@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -285,7 +285,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 const SizedBox(height: 10),
                 InkWell(
                   onTap: () async {
-                    final url = Uri.parse('https://rustore.ru/apps/2063671512');
+                    final url = Uri.parse(
+                      'https://www.rustore.ru/catalog/app/com.appsfolder.overcalc',
+                    );
                     if (await canLaunchUrl(url)) {
                       await launchUrl(
                         url,
@@ -524,8 +526,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   void _showApiKeyDialog() async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentKey = prefs.getString('user_gemini_api_key') ?? '';
+    final storage = const FlutterSecureStorage();
+    final currentKey = await storage.read(key: 'user_gemini_api_key') ?? '';
     if (!mounted) return;
     final controller = TextEditingController(text: currentKey);
 
@@ -553,8 +555,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                prefs.remove('user_gemini_api_key');
+              onPressed: () async {
+                await storage.delete(key: 'user_gemini_api_key');
                 Navigator.of(context).pop();
               },
               child: const Text('Удалить'),
@@ -564,12 +566,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 backgroundColor: Colors.amber.shade700,
                 foregroundColor: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
                 final newKey = controller.text.trim();
                 if (newKey.isNotEmpty) {
-                  prefs.setString('user_gemini_api_key', newKey);
+                  await storage.write(
+                    key: 'user_gemini_api_key',
+                    value: newKey,
+                  );
                 } else {
-                  prefs.remove('user_gemini_api_key');
+                  await storage.delete(key: 'user_gemini_api_key');
                 }
                 Navigator.of(context).pop();
               },

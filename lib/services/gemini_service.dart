@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Content {
   final String role;
@@ -17,8 +17,8 @@ class GeminiService {
       dotenv.env['DEFAULT_MODEL_NAME'] ?? 'gemini-2.5-flash';
 
   Future<String?> _getUserApiKey() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_gemini_api_key');
+    final storage = const FlutterSecureStorage();
+    return storage.read(key: 'user_gemini_api_key');
   }
 
   Future<String> getResponse(
