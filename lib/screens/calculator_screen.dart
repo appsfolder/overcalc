@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'dart:convert';
 
+import 'history_screen.dart';
 import '../models/calculator_personality.dart';
 import '../services/gemini_service.dart';
 import '../widgets/calculator_button.dart';
@@ -26,6 +28,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   final GeminiService _geminiService = GeminiService();
 
   final _storage = const FlutterSecureStorage();
+
+  final GlobalKey _menuKey = GlobalKey();
 
   @override
   void initState() {
@@ -93,6 +97,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   Future<void> _calculateWithGemini() async {
     if (_display == '0' || _display.isEmpty) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -104,6 +109,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _chatHistory,
         userRequestText,
       );
+
+      _checkAndShowHint();
 
       _chatHistory.add(Content('user', userRequestText));
       _chatHistory.add(Content('model', result));
@@ -134,9 +141,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "OverCalc",
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'IBMPlexSans',
             fontWeight: FontWeight.w500,
           ),
@@ -144,73 +151,111 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'change_personality') {
-                _showPersonalityDialog();
-              } else if (value == 'about') {
-                _showAboutDialog();
-              } else if (value == 'clear_history') {
-                _resetCalculatorState();
-              } else if (value == 'set_api_key') {
-                _showApiKeyDialog();
-              }
+          IconButton(
+            icon: const Icon(Icons.history_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      HistoryScreen(chatHistory: _chatHistory),
+                ),
+              );
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                value: 'change_personality',
-                child: ListTile(
-                  leading: const Icon(Icons.psychology_alt),
-                  title: Text(
-                    'Сменить личность',
-                    style: const TextStyle(
-                      fontFamily: 'IBMPlexSans',
-                      fontWeight: FontWeight.w400,
+          ),
+
+          Showcase.withWidget(
+            key: _menuKey,
+            container: Container(
+              height: 96,
+              width: 220,
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color:
+                    Theme.of(context).dialogTheme.backgroundColor ??
+                    const Color(0xFF2C2C2C),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: const Text(
+                'Попробуйте другие личности для калькулятора!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'IBMPlexSans',
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            targetShapeBorder: const CircleBorder(),
+            child: PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'change_personality') {
+                  _showPersonalityDialog();
+                } else if (value == 'about') {
+                  _showAboutDialog();
+                } else if (value == 'clear_history') {
+                  _resetCalculatorState();
+                } else if (value == 'set_api_key') {
+                  _showApiKeyDialog();
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: 'change_personality',
+                  child: ListTile(
+                    leading: const Icon(Icons.psychology_alt),
+                    title: const Text(
+                      'Сменить личность',
+                      style: TextStyle(
+                        fontFamily: 'IBMPlexSans',
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              PopupMenuItem<String>(
-                value: 'clear_history',
-                child: ListTile(
-                  leading: const Icon(Icons.delete_outline),
-                  title: Text(
-                    'Очистить историю',
-                    style: const TextStyle(
-                      fontFamily: 'IBMPlexSans',
-                      fontWeight: FontWeight.w400,
+                PopupMenuItem<String>(
+                  value: 'clear_history',
+                  child: ListTile(
+                    leading: const Icon(Icons.delete_outline),
+                    title: const Text(
+                      'Очистить историю',
+                      style: TextStyle(
+                        fontFamily: 'IBMPlexSans',
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              PopupMenuItem<String>(
-                value: 'set_api_key',
-                child: ListTile(
-                  leading: const Icon(Icons.vpn_key_outlined),
-                  title: Text(
-                    'Свой API ключ',
-                    style: const TextStyle(
-                      fontFamily: 'IBMPlexSans',
-                      fontWeight: FontWeight.w400,
+                PopupMenuItem<String>(
+                  value: 'set_api_key',
+                  child: ListTile(
+                    leading: const Icon(Icons.vpn_key_outlined),
+                    title: const Text(
+                      'Свой API ключ',
+                      style: TextStyle(
+                        fontFamily: 'IBMPlexSans',
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem<String>(
-                value: 'about',
-                child: ListTile(
-                  leading: const Icon(Icons.info_outline),
-                  title: Text(
-                    'О приложении',
-                    style: const TextStyle(
-                      fontFamily: 'IBMPlexSans',
-                      fontWeight: FontWeight.w400,
+                const PopupMenuDivider(),
+                PopupMenuItem<String>(
+                  value: 'about',
+                  child: ListTile(
+                    leading: const Icon(Icons.info_outline),
+                    title: const Text(
+                      'О приложении',
+                      style: TextStyle(
+                        fontFamily: 'IBMPlexSans',
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -230,16 +275,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         padding: EdgeInsets.only(bottom: 28.0, right: 8.0),
                         child: SpinningArcLoader(size: 48),
                       )
-                    : AutoSizeText(
-                        _display,
-                        textAlign: TextAlign.right,
-                        style: const TextStyle(
-                          fontFamily: 'IBMPlexSans',
-                          fontSize: 80,
-                          fontWeight: FontWeight.w300,
+                    : SingleChildScrollView(
+                        reverse: true,
+                        child: AutoSizeText(
+                          _display,
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSans',
+                            fontSize: 80,
+                            fontWeight: FontWeight.w300,
+                          ),
+                          minFontSize: 24,
+                          maxLines: 5,
                         ),
-                        minFontSize: 24,
-                        maxLines: 5,
                       ),
               ),
             ),
@@ -618,6 +666,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           ],
         );
       },
+    );
+  }
+
+  Future<void> _checkAndShowHint() async {
+    String? requestCountStr = await _storage.read(key: 'request_count');
+    String? hintShownStr = await _storage.read(key: 'personality_hint_shown');
+    int requestCount = int.tryParse(requestCountStr ?? '') ?? 0;
+    bool hintShown = hintShownStr == 'true';
+
+    if (!hintShown && requestCount >= 1) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        ShowCaseWidget.of(context).startShowCase([_menuKey]);
+      }
+      await _storage.write(key: 'personality_hint_shown', value: 'true');
+    }
+
+    await _storage.write(
+      key: 'request_count',
+      value: (requestCount + 1).toString(),
     );
   }
 }

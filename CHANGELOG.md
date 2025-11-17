@@ -17,3 +17,7 @@ v1.5.5 - fixed personalities
 v1.5.6 - fixed custom api key support
 v1.5.7 - migrated to flutter_secure_storage
 v1.5.8 - minor fixes
+v1.6.0 - viewable chat history
+v1.6.1 - minor bug fixes
+v1.6.2 - help popup
+v1.6.3 - bug fixes

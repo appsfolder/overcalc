@@ -1,7 +1,7 @@
 name: overcalc
 description: "Overengineered calculator."
 publish_to: "none"
-version: "1.5.6+156"
+version: "1.6.3+163"
 
 environment:
   sdk: ^3.9.2
@@ -18,6 +18,7 @@ dependencies:
   flutter_native_splash: ^2.4.7
   cupertino_icons: ^1.0.8
   http: ^1.2.0
+  showcaseview: ^5.0.1
 
 dev_dependencies:
   flutter_test:

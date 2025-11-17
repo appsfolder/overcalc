@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import 'screens/calculator_screen.dart';
 
@@ -53,7 +54,7 @@ class OverCalcApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const CalculatorScreen(),
+      home: ShowCaseWidget(builder: (context) => const CalculatorScreen()),
     );
   }
 }
