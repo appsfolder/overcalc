@@ -18,7 +18,9 @@ class CalculatorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child;
     if (text == '⌫') {
-      child = Icon(Icons.backspace_outlined, color: textColor, size: 28);
+      child = Center(
+        child: Icon(Icons.backspace_outlined, color: textColor, size: 28),
+      );
     } else {
       child = Text(
         text,
