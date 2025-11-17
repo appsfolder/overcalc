@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import '../models/calculator_personality.dart';
 import '../services/gemini_service.dart';
@@ -399,31 +398,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       ],
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 16),
-                FutureBuilder<PackageInfo>(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const SizedBox.shrink();
-                    }
-
-                    final packageInfo = snapshot.data!;
-                    final version = packageInfo.version;
-                    final buildNumber = packageInfo.buildNumber;
-
-                    return Center(
-                      child: Text(
-                        'Версия: $version+$buildNumber',
-                        style: const TextStyle(
-                          fontFamily: 'IBMPlexSans',
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                    );
-                  },
                 ),
               ],
             ),
