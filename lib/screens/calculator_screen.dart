@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
 
 import '../models/calculator_personality.dart';
 import '../services/gemini_service.dart';
@@ -23,6 +24,47 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   late CalculatorPersonality _currentPersonality;
 
   final GeminiService _geminiService = GeminiService();
+
+  final _storage = const FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadState();
+  }
+
+  Future<void> _saveState() async {
+    final historyJson = jsonEncode(
+      _chatHistory.map((c) => {'role': c.role, 'text': c.text}).toList(),
+    );
+    await _storage.write(key: 'chat_history', value: historyJson);
+    await _storage.write(
+      key: 'selected_personality',
+      value: _currentPersonality.name,
+    );
+  }
+
+  Future<void> _loadState() async {
+    final historyJson = await _storage.read(key: 'chat_history');
+    if (historyJson != null) {
+      final historyList = jsonDecode(historyJson) as List;
+      _chatHistory.clear();
+      _chatHistory.addAll(
+        historyList.map((j) => Content(j['role'], j['text'])),
+      );
+    }
+
+    final personalityName = await _storage.read(key: 'selected_personality');
+    if (personalityName != null) {
+      _currentPersonality = personalities.firstWhere(
+        (p) => p.name == personalityName,
+        orElse: () => personalities.first,
+      );
+    } else {
+      _currentPersonality = personalities.first;
+    }
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -71,6 +113,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
       _chatHistory.add(Content('user', userRequestText));
       _chatHistory.add(Content('model', result));
+
+      await _saveState();
 
       if (_chatHistory.length > 8) {
         _chatHistory.removeRange(0, 2);
@@ -449,6 +493,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       _currentPersonality = personality;
                       _display = '0';
                       _chatHistory.clear();
+                      _saveState();
                     });
                     Navigator.of(context).pop();
                   },
