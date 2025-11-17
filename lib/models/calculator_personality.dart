@@ -13,8 +13,7 @@ class CalculatorPersonality {
 final List<CalculatorPersonality> personalities = [
   const CalculatorPersonality(
     name: 'Саркастичный',
-    description:
-        'Калькулятор OverCalc, дающий едкие замечания при некорректных примерах',
+    description: 'Стандартный калькулятор OverCalc',
     prompt:
         'Ты — умный, немного саркастичный калькулятор по имени OverCalc. '
         'Твоя главная задача — решать математические примеры. '

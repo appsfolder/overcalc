@@ -128,7 +128,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       setState(() {
         _display = e.toString().contains('API ключ не найден')
             ? 'API ключ не найден'
-            : 'Ошибка. Для работы OverCalc требуется зарубежный IP.';
+            : 'Произошла ошибка. Попробуйте еще раз позже';
       });
     } finally {
       setState(() {
