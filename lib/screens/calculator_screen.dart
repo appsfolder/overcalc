@@ -66,12 +66,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     setState(() {});
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _currentPersonality = personalities.first;
-  }
-
   void _onButtonPressed(String value) {
     HapticFeedback.lightImpact();
     if (_isLoading) return;
@@ -513,23 +507,35 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           : null,
                       borderRadius: BorderRadius.circular(16.0),
                     ),
-                    child: Center(
-                      child: Text(
-                        personality.name,
-                        style: isSelected
-                            ? const TextStyle(
-                                fontFamily: 'IBMPlexSans',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 16,
-                              )
-                            : const TextStyle(
-                                fontFamily: 'IBMPlexSans',
-                                fontWeight: FontWeight.normal,
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                      ),
+                    child: Column(
+                      children: [
+                        Text(
+                          personality.name,
+                          style: isSelected
+                              ? const TextStyle(
+                                  fontFamily: 'IBMPlexSans',
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                )
+                              : const TextStyle(
+                                  fontFamily: 'IBMPlexSans',
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          personality.description,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'IBMPlexSans',
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
