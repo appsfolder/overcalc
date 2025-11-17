@@ -72,6 +72,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       _chatHistory.add(Content('user', userRequestText));
       _chatHistory.add(Content('model', result));
 
+      if (_chatHistory.length > 8) {
+        _chatHistory.removeRange(0, 2);
+      }
+
       setState(() {
         _display = result;
       });
