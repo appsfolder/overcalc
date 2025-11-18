@@ -32,8 +32,11 @@
     *   `flutter_secure_storage` - для хранения API ключа пользователя, истории, и настроек
     *   `url_launcher` - для открытия внешних ссылок
     *   `flutter_native_splash` & `flutter_launcher_icons` - для брендинга
+    *   `showcaseview` - для помощи новым пользователям
 
 ![OverCalc Slide 3](assets/images/ThirdSlide.png)
+
+![OverCalc Slide 4](assets/images/FourthSlide.png)
 
 ## Как запустить проект
 
