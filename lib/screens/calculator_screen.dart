@@ -146,7 +146,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       setState(() {
         _display = e.toString().contains('API ключ не найден')
             ? 'API ключ не найден'
-            : 'Произошла ошибка. Попробуйте еще раз позже';
+            : e.toString().contains('503')
+            ? 'Сервис провайдера перегружен. Приносим свои извинения'
+            : 'Произошла неизвестная ошибка. Попробуйте еще раз позже';
       });
     } finally {
       setState(() {
@@ -293,25 +295,52 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   horizontal: 24,
                   vertical: 12,
                 ),
-                child: _isLoading
-                    ? const Padding(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    const maxFontSize = 80.0;
+                    const minFontSize = 28.0;
+                    const textStyle = TextStyle(
+                      fontFamily: 'IBMPlexSans',
+                      fontSize: maxFontSize,
+                      fontWeight: FontWeight.w300,
+                    );
+
+                    if (_isLoading) {
+                      return const Padding(
                         padding: EdgeInsets.only(bottom: 28.0, right: 8.0),
                         child: SpinningArcLoader(size: 48),
-                      )
-                    : SingleChildScrollView(
-                        reverse: true,
-                        child: AutoSizeText(
-                          _display,
-                          textAlign: TextAlign.right,
-                          style: const TextStyle(
-                            fontFamily: 'IBMPlexSans',
-                            fontSize: 80,
-                            fontWeight: FontWeight.w300,
+                      );
+                    }
+
+                    return AutoSizeText(
+                      _display,
+                      style: textStyle,
+                      textAlign: TextAlign.right,
+                      minFontSize: minFontSize,
+                      maxLines: 10,
+                      stepGranularity: 4,
+                      wrapWords: false,
+                      overflowReplacement: Align(
+                        alignment: Alignment.bottomRight,
+                        child: RawScrollbar(
+                          thumbVisibility: true,
+                          thumbColor: Colors.amber.shade700.withOpacity(0.5),
+                          radius: const Radius.circular(8),
+                          thickness: 6,
+                          padding: const EdgeInsets.only(right: -12),
+                          child: SingleChildScrollView(
+                            reverse: true,
+                            child: Text(
+                              _display,
+                              style: textStyle.copyWith(fontSize: minFontSize),
+                              textAlign: TextAlign.right,
+                            ),
                           ),
-                          minFontSize: 24,
-                          maxLines: 5,
                         ),
                       ),
+                    );
+                  },
+                ),
               ),
             ),
             Expanded(
