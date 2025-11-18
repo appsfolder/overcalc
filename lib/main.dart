@@ -7,7 +7,6 @@ import 'screens/calculator_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dotenv.load(fileName: ".env");
   runApp(const OverCalcApp());
 }
@@ -19,6 +18,23 @@ class OverCalcApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'OverCalc',
+      builder: (context, child) {
+        final mediaQueryData = MediaQuery.of(context);
+        final isTablet = mediaQueryData.size.shortestSide >= 600;
+
+        if (isTablet) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+          ]);
+        } else {
+          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+        }
+
+        return child!;
+      },
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF1A1A1A),
         appBarTheme: const AppBarTheme(
