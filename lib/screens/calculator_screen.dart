@@ -159,203 +159,169 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isWideScreen = size.width > 600;
+
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "OverCalc",
-          style: TextStyle(
-            fontFamily: 'IBMPlexSans',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history_outlined),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      HistoryScreen(chatHistory: _chatHistory),
-                ),
-              );
-            },
-          ),
-
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => _showSettingsScreen(),
-          ),
-
-          Showcase.withWidget(
-            key: _menuKey,
-            container: Container(
-              height: 96,
-              width: 220,
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color:
-                    Theme.of(context).dialogTheme.backgroundColor ??
-                    const Color(0xFF2C2C2C),
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: const Text(
-                'Попробуйте другие личности для калькулятора!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'IBMPlexSans',
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+      body: Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          _handleKeyEvent(event);
+          return KeyEventResult.handled;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "OverCalc",
+              style: TextStyle(
+                fontFamily: 'IBMPlexSans',
+                fontWeight: FontWeight.w500,
               ),
             ),
-            targetShapeBorder: const CircleBorder(),
-            child: PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'change_personality') {
-                  _showPersonalityDialog();
-                } else if (value == 'about') {
-                  _showAboutDialog();
-                } else if (value == 'clear_history') {
-                  _resetCalculatorState();
-                } else if (value == 'set_api_key') {
-                  _showApiKeyDialog();
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'change_personality',
-                  child: ListTile(
-                    leading: const Icon(Icons.psychology_alt),
-                    title: const Text(
-                      'Сменить личность',
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSans',
-                        fontWeight: FontWeight.w400,
-                      ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.history_outlined),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HistoryScreen(chatHistory: _chatHistory),
                     ),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () => _showSettingsScreen(),
+              ),
+              Showcase.withWidget(
+                key: _menuKey,
+                container: Container(
+                  height: 96,
+                  width: 220,
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).dialogTheme.backgroundColor ??
+                        const Color(0xFF2C2C2C),
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'clear_history',
-                  child: ListTile(
-                    leading: const Icon(Icons.delete_outline),
-                    title: const Text(
-                      'Очистить историю',
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSans',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'set_api_key',
-                  child: ListTile(
-                    leading: const Icon(Icons.vpn_key_outlined),
-                    title: const Text(
-                      'Свой API ключ',
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSans',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ),
-                const PopupMenuDivider(),
-                PopupMenuItem<String>(
-                  value: 'about',
-                  child: ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text(
-                      'О приложении',
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSans',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                alignment: Alignment.bottomRight,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    const maxFontSize = 80.0;
-                    const minFontSize = 28.0;
-                    const textStyle = TextStyle(
+                  child: const Text(
+                    'Попробуйте другие личности для калькулятора!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
                       fontFamily: 'IBMPlexSans',
-                      fontSize: maxFontSize,
-                      fontWeight: FontWeight.w300,
-                    );
-
-                    if (_isLoading) {
-                      return const Padding(
-                        padding: EdgeInsets.only(bottom: 28.0, right: 8.0),
-                        child: SpinningArcLoader(size: 48),
-                      );
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                targetShapeBorder: const CircleBorder(),
+                child: PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'change_personality') {
+                      _showPersonalityDialog();
+                    } else if (value == 'about') {
+                      _showAboutDialog();
+                    } else if (value == 'clear_history') {
+                      _resetCalculatorState();
+                    } else if (value == 'set_api_key') {
+                      _showApiKeyDialog();
                     }
-
-                    return AutoSizeText(
-                      _display,
-                      style: textStyle,
-                      textAlign: TextAlign.right,
-                      minFontSize: minFontSize,
-                      maxLines: 10,
-                      stepGranularity: 4,
-                      wrapWords: false,
-                      overflowReplacement: Align(
-                        alignment: Alignment.bottomRight,
-                        child: RawScrollbar(
-                          thumbVisibility: true,
-                          thumbColor: Colors.amber.shade700.withOpacity(0.5),
-                          radius: const Radius.circular(8),
-                          thickness: 6,
-                          padding: const EdgeInsets.only(right: -12),
-                          child: SingleChildScrollView(
-                            reverse: true,
-                            child: Text(
-                              _display,
-                              style: textStyle.copyWith(fontSize: minFontSize),
-                              textAlign: TextAlign.right,
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                        PopupMenuItem<String>(
+                          value: 'change_personality',
+                          child: ListTile(
+                            leading: const Icon(Icons.psychology_alt),
+                            title: const Text(
+                              'Сменить личность',
+                              style: TextStyle(
+                                fontFamily: 'IBMPlexSans',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ),
+                        PopupMenuItem<String>(
+                          value: 'clear_history',
+                          child: ListTile(
+                            leading: const Icon(Icons.delete_outline),
+                            title: const Text(
+                              'Очистить историю',
+                              style: TextStyle(
+                                fontFamily: 'IBMPlexSans',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'set_api_key',
+                          child: ListTile(
+                            leading: const Icon(Icons.vpn_key_outlined),
+                            title: const Text(
+                              'Свой API ключ',
+                              style: TextStyle(
+                                fontFamily: 'IBMPlexSans',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const PopupMenuDivider(),
+                        PopupMenuItem<String>(
+                          value: 'about',
+                          child: ListTile(
+                            leading: const Icon(Icons.info_outline),
+                            title: const Text(
+                              'О приложении',
+                              style: TextStyle(
+                                fontFamily: 'IBMPlexSans',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                ),
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: isLandscape ? 1 : 2,
+                      child: _buildDisplayArea(context),
+                    ),
+
+                    Expanded(
+                      flex: isLandscape ? 3 : 4,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isWideScreen ? 24.0 : 0,
+                          vertical: isWideScreen ? 16.0 : 0,
+                        ),
+                        child: _buildKeypadArea(),
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ),
             ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                children: [
-                  _buildButtonRow(['C', '(', ')', '/']),
-                  _buildButtonRow(['7', '8', '9', '×']),
-                  _buildButtonRow(['4', '5', '6', '-']),
-                  _buildButtonRow(['1', '2', '3', '+']),
-                  _buildButtonRow(['⌫', '0', '.', '=']),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -616,13 +582,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                   fontFamily: 'IBMPlexSans',
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 )
                               : const TextStyle(
                                   fontFamily: 'IBMPlexSans',
                                   fontWeight: FontWeight.normal,
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 ),
                         ),
                         const SizedBox(height: 4),
@@ -872,6 +838,141 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     await _storage.write(
       key: 'request_count',
       value: (requestCount + 1).toString(),
+    );
+  }
+
+  void _handleKeyEvent(KeyEvent event) {
+    if (event is! KeyDownEvent) return;
+
+    final logicalKey = event.logicalKey;
+    String? value;
+
+    if (logicalKey == LogicalKeyboardKey.digit0 ||
+        logicalKey == LogicalKeyboardKey.numpad0)
+      value = '0';
+    else if (logicalKey == LogicalKeyboardKey.digit1 ||
+        logicalKey == LogicalKeyboardKey.numpad1)
+      value = '1';
+    else if (logicalKey == LogicalKeyboardKey.digit2 ||
+        logicalKey == LogicalKeyboardKey.numpad2)
+      value = '2';
+    else if (logicalKey == LogicalKeyboardKey.digit3 ||
+        logicalKey == LogicalKeyboardKey.numpad3)
+      value = '3';
+    else if (logicalKey == LogicalKeyboardKey.digit4 ||
+        logicalKey == LogicalKeyboardKey.numpad4)
+      value = '4';
+    else if (logicalKey == LogicalKeyboardKey.digit5 ||
+        logicalKey == LogicalKeyboardKey.numpad5)
+      value = '5';
+    else if (logicalKey == LogicalKeyboardKey.digit6 ||
+        logicalKey == LogicalKeyboardKey.numpad6)
+      value = '6';
+    else if (logicalKey == LogicalKeyboardKey.digit7 ||
+        logicalKey == LogicalKeyboardKey.numpad7)
+      value = '7';
+    else if (logicalKey == LogicalKeyboardKey.digit8 ||
+        logicalKey == LogicalKeyboardKey.numpad8)
+      value = '8';
+    else if (logicalKey == LogicalKeyboardKey.digit9 ||
+        logicalKey == LogicalKeyboardKey.numpad9)
+      value = '9';
+    else if (logicalKey == LogicalKeyboardKey.numpadAdd ||
+        event.character == '+')
+      value = '+';
+    else if (logicalKey == LogicalKeyboardKey.numpadSubtract ||
+        event.character == '-')
+      value = '-';
+    else if (logicalKey == LogicalKeyboardKey.numpadMultiply ||
+        event.character == '*')
+      value = '×';
+    else if (logicalKey == LogicalKeyboardKey.numpadDivide ||
+        event.character == '/')
+      value = '/';
+    else if (logicalKey == LogicalKeyboardKey.period ||
+        logicalKey == LogicalKeyboardKey.numpadDecimal)
+      value = '.';
+    else if (event.character == '(')
+      value = '(';
+    else if (event.character == ')')
+      value = ')';
+    else if (logicalKey == LogicalKeyboardKey.enter ||
+        logicalKey == LogicalKeyboardKey.numpadEnter ||
+        event.character == '=')
+      value = '=';
+    else if (logicalKey == LogicalKeyboardKey.backspace)
+      value = '⌫';
+    else if (logicalKey == LogicalKeyboardKey.escape ||
+        logicalKey == LogicalKeyboardKey.delete)
+      value = 'C';
+
+    if (value != null) {
+      _onButtonPressed(value);
+    }
+  }
+
+  Widget _buildDisplayArea(BuildContext context) {
+    return Container(
+      alignment: Alignment.bottomRight,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const maxFontSize = 80.0;
+          const minFontSize = 28.0;
+          const textStyle = TextStyle(
+            fontFamily: 'IBMPlexSans',
+            fontSize: maxFontSize,
+            fontWeight: FontWeight.w300,
+          );
+
+          if (_isLoading) {
+            return const Padding(
+              padding: EdgeInsets.only(bottom: 28.0, right: 8.0),
+              child: SpinningArcLoader(size: 48),
+            );
+          }
+
+          return AutoSizeText(
+            _display,
+            style: textStyle,
+            textAlign: TextAlign.right,
+            minFontSize: minFontSize,
+            maxLines: 10,
+            stepGranularity: 4,
+            wrapWords: false,
+            overflowReplacement: Align(
+              alignment: Alignment.bottomRight,
+              child: RawScrollbar(
+                thumbVisibility: true,
+                thumbColor: Colors.amber.shade700.withOpacity(0.5),
+                radius: const Radius.circular(8),
+                thickness: 6,
+                padding: const EdgeInsets.only(right: -12),
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Text(
+                    _display,
+                    style: textStyle.copyWith(fontSize: minFontSize),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildKeypadArea() {
+    return Column(
+      children: [
+        _buildButtonRow(['C', '(', ')', '/']),
+        _buildButtonRow(['7', '8', '9', '×']),
+        _buildButtonRow(['4', '5', '6', '-']),
+        _buildButtonRow(['1', '2', '3', '+']),
+        _buildButtonRow(['⌫', '0', '.', '=']),
+      ],
     );
   }
 }
