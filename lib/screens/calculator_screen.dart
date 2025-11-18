@@ -25,6 +25,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   final List<Content> _chatHistory = [];
   late CalculatorPersonality _currentPersonality;
 
+  bool _hapticsEnabled = true;
+  int _historyLimit = 4;
+
   final GeminiService _geminiService = GeminiService();
 
   final _storage = const FlutterSecureStorage();
@@ -67,11 +70,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     } else {
       _currentPersonality = personalities.first;
     }
+    final hapticsStr = await _storage.read(key: 'settings_haptics');
+    if (hapticsStr != null) {
+      _hapticsEnabled = hapticsStr == 'true';
+    }
+
+    final historyLimitStr = await _storage.read(key: 'settings_history_limit');
+    if (historyLimitStr != null) {
+      _historyLimit = int.tryParse(historyLimitStr) ?? 4;
+    }
     setState(() {});
   }
 
   void _onButtonPressed(String value) {
-    HapticFeedback.lightImpact();
+    if (_hapticsEnabled) HapticFeedback.lightImpact();
     if (_isLoading) return;
 
     setState(() {
@@ -115,11 +127,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       _chatHistory.add(Content('user', userRequestText));
       _chatHistory.add(Content('model', result));
 
-      await _saveState();
+      final maxMessages = _historyLimit * 2;
 
-      if (_chatHistory.length > 8) {
-        _chatHistory.removeRange(0, 2);
+      if (_historyLimit == 0) {
+        _chatHistory.clear();
+      } else {
+        while (_chatHistory.length > maxMessages) {
+          _chatHistory.removeAt(0);
+        }
       }
+
+      await _saveState();
 
       setState(() {
         _display = result;
@@ -162,6 +180,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
               );
             },
+          ),
+
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => _showSettingsScreen(),
           ),
 
           Showcase.withWidget(
@@ -375,7 +398,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 InkWell(
                   onTap: () async {
                     final url = Uri.parse(
-                      'https://www.rustore.ru/catalog/app/com.appsfolder.overcalc',
+                      'https://www.rustore.ru/catalog/app/com.appsfolder.overcalc', // https://play.google.com/store/apps/details?id=com.appsfolder.overcalc
                     );
                     if (await canLaunchUrl(url)) {
                       await launchUrl(
@@ -602,6 +625,134 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     });
   }
 
+  void _showSettingsScreen() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        // StatefulBuilder нужен, чтобы обновлять состояние внутри диалога (свитч и слайдер)
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: const Text(
+                'Настройки',
+                style: TextStyle(
+                  fontFamily: 'IBMPlexSans',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // --- ВИБРАЦИЯ ---
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text(
+                      'Вибрация',
+                      style: TextStyle(
+                        fontFamily: 'IBMPlexSans',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    value: _hapticsEnabled,
+                    activeColor: Colors.amber.shade700,
+                    onChanged: (bool value) async {
+                      setStateDialog(() {
+                        _hapticsEnabled = value;
+                      });
+                      setState(() {});
+                      await _storage.write(
+                        key: 'settings_haptics',
+                        value: value.toString(),
+                      );
+                    },
+                  ),
+                  const Divider(),
+                  const SizedBox(height: 8),
+
+                  Text(
+                    'Память калькулятора: $_historyLimit',
+                    style: const TextStyle(
+                      fontFamily: 'IBMPlexSans',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Влияет на длину истории вычислений и память калькулятора.',
+                    style: TextStyle(
+                      fontFamily: 'IBMPlexSans',
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Slider(
+                    value: _historyLimit.toDouble(),
+                    min: 0,
+                    max: 4,
+                    divisions: 2,
+                    activeColor: Colors.amber.shade700,
+                    label: _historyLimit.toString(),
+                    onChanged: (double value) async {
+                      final newVal = value.round();
+                      setStateDialog(() {
+                        _historyLimit = newVal;
+                      });
+                      setState(() {});
+
+                      if (_chatHistory.length > newVal * 2) {
+                        while (_chatHistory.length > newVal * 2) {
+                          _chatHistory.removeAt(0);
+                        }
+                        await _saveState();
+                      }
+
+                      await _storage.write(
+                        key: 'settings_history_limit',
+                        value: newVal.toString(),
+                      );
+                    },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        '0',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                      Text(
+                        '2',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                      Text(
+                        '4',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Ок',
+                    style: TextStyle(
+                      fontFamily: 'IBMPlexSans',
+                      color: Colors.amber.shade700,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _showApiKeyDialog() async {
     final storage = const FlutterSecureStorage();
     final currentKey = await storage.read(key: 'user_gemini_api_key') ?? '';
@@ -636,7 +787,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 await storage.delete(key: 'user_gemini_api_key');
                 Navigator.of(context).pop();
               },
-              child: const Text('Удалить'),
+              child: const Text(
+                'Удалить',
+                style: const TextStyle(
+                  fontFamily: 'IBMPlexSans',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
