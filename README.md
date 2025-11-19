@@ -10,7 +10,7 @@
 
 
 <a href="https://play.google.com/store/apps/details?id=com.appsfolder.overcalc" target="_blank">
-  <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="60" alt="Get it on Google Play"/></a><span style="display:inline-block;width:8px;"></span><a href="https://www.rustore.ru/catalog/app/com.appsfolder.overcalc?utm_source=available_in_rustore&utm_medium=com.appsfolder.overcalc&rsm=1&mt_link_id=iios36&mt_sub1=com.appsfolder.overcalc" target="_blank"><img src="https://www.rustore.ru/help/icons/logo-color-dark.svg" height="60" alt="Download on RuStore"/></a>
+  <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="50" alt="Get it on Google Play"/></a><span style="display:inline-block;width:8px;"></span><a href="https://www.rustore.ru/catalog/app/com.appsfolder.overcalc?utm_source=available_in_rustore&utm_medium=com.appsfolder.overcalc&rsm=1&mt_link_id=iios36&mt_sub1=com.appsfolder.overcalc" target="_blank"><img src="https://www.rustore.ru/help/icons/logo-color-dark.svg" height="50" alt="Download on RuStore"/></a>
 
 &nbsp;
 
